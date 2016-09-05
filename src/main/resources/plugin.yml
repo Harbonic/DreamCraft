@@ -1,0 +1,8 @@
+name: MonsterNetwork
+version: 0.0.1
+main: com.chris.rpg.UdderCore
+description: Main plugin.
+
+commands:
+    rank:
+        description: Sets a rank.
