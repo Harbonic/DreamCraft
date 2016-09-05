@@ -62,7 +62,7 @@ public class UdderCore extends JavaPlugin implements Listener
 
         System.out.println("Finishing commands...");
         this.getCommand("rank").setExecutor(new RankCommand(this));
-        System.out.println("Done!");
+        System.out.println("Done.");
 
         instance = this;
 
