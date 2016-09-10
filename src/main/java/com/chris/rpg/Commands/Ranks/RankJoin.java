@@ -1,11 +1,8 @@
-package com.chris.rpg.Listeners;
+package com.chris.rpg.Commands.Ranks;
 
-import com.chris.rpg.Commands.RankCommand.PlayerRanksInfo;
-import com.chris.rpg.Commands.RankCommand.RankScoreboard;
-import com.chris.rpg.Methods.MonsterTitleScreen;
-import com.chris.rpg.UdderCore;
+import com.chris.rpg.Messages.BotMessages;
+import com.chris.rpg.Core;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -23,15 +20,17 @@ import java.io.IOException;
 /**
  * Created by Chris on 6/15/2015.
  */
-public class JoinListener implements Listener
+public class RankJoin implements Listener
 {
     PlayerRanksInfo rankInfo;
-    private final UdderCore plugin;
-    public JoinListener(UdderCore plugin)
+    private final Core plugin;
+    public RankJoin(Core plugin)
     {
         rankInfo = new PlayerRanksInfo(plugin);
         this.plugin = plugin;
     }
+
+
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e)
@@ -42,6 +41,7 @@ public class JoinListener implements Listener
         Scoreboard board = manager.getMainScoreboard();
 
         e.setJoinMessage(null);
+
         p.teleport(new Location(p.getWorld(), 100, 100, 100));
         File playersDir = new File(this.plugin.getDataFolder() + File.separator + "players");
         if(!playersDir.exists())
@@ -50,17 +50,18 @@ public class JoinListener implements Listener
         }
 
         //Creating the file for each individual player.
-        File playerFile = new File(this.plugin.getDataFolder() + File.separator + "players", p.getUniqueId() + ".yml"); //Has to be unique id
-        if(!playerFile.exists())
+        File rankFile = new File(this.plugin.getDataFolder() + File.separator + "players", p.getUniqueId() + ".yml"); //Has to be unique id
+        if (!rankFile.exists())
         {
             try
             {
-                playerFile.createNewFile();
+                rankFile.createNewFile();
             } catch (IOException ex)
             {
                 ex.printStackTrace();
             }
         }
+        File playerFile = new File(this.plugin.getDataFolder() + File.separator + "players", p.getUniqueId() + ".yml");
         FileConfiguration players = YamlConfiguration.loadConfiguration(playerFile);
         try
         {
@@ -70,12 +71,22 @@ public class JoinListener implements Listener
             ex.printStackTrace();
         }
 
+        this.plugin.getServer().getScheduler()
+                .scheduleSyncRepeatingTask(this.plugin, new Runnable() {
+                    @Override
+                    public void run() {
+                        p.setHealth(10.0);
+                        p.setFoodLevel(10);
+                    }
+                }, 1, 1);
+
 
             if (p.hasPlayedBefore())
             {
-
+                BotMessages botMessages = new BotMessages(plugin);
                 if (players.getString("rank").equalsIgnoreCase("president"))
                 {
+                    botMessages.presJoin(p,e);
                     rankInfo.playerRankPresident(p);
                     Team pres = board.getTeam("pres");
                     pres.addEntry(p.getName());
@@ -83,36 +94,42 @@ public class JoinListener implements Listener
                 else if (players.getString("rank").equalsIgnoreCase("dev"))
                 {
                     rankInfo.playerRankDev(p);
+                    botMessages.devJoin(p);
                     Team dev = board.getTeam("dev");
                     dev.addEntry(p.getName());
                 }
                 else if (players.getString("rank").equalsIgnoreCase("headexecutive"))
                 {
                     rankInfo.playerRankHeadExecutive(p);
+                    botMessages.memberJoin(p);
                     Team headExe = board.getTeam("headExecutive");
                     headExe.addEntry(p.getName());
                 }
                 else if (players.getString("rank").equalsIgnoreCase("executive"))
                 {
                     rankInfo.playerRankExecutive(p);
+                    botMessages.memberJoin(p);
                     Team executive = board.getTeam("executive");
                     executive.addEntry(p.getName());
                 }
                 else if (players.getString("rank").equalsIgnoreCase("architect"))
                 {
                     rankInfo.playerRankArchitect(p);
+                    botMessages.memberJoin(p);
                     Team architect = board.getTeam("architect");
                     architect.addEntry(p.getName());
                 }
                 else if (players.getString("rank").equalsIgnoreCase("member"))
                 {
                     rankInfo.playerRankMember(p);
+                    botMessages.memberJoin(p);
                     Team member = board.getTeam("member");
                     member.addEntry(p.getName());
                 }
             }
             else
             {
+                BotMessages botMessages = new BotMessages(plugin);
                 rankInfo.playerRankMember(p);
                 players.set("rank", "member");
                 try
@@ -124,6 +141,7 @@ public class JoinListener implements Listener
                 }
                 Team member = board.getTeam("member");
                 member.addEntry(p.getName());
+                botMessages.firstTimeJoiner(p);
             }
         /*
         * Titles - very useful

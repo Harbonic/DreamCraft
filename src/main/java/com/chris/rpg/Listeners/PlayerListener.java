@@ -1,6 +1,6 @@
 package com.chris.rpg.Listeners;
 
-import com.chris.rpg.UdderCore;
+import com.chris.rpg.Core;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -12,8 +12,8 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
  */
 public class PlayerListener implements Listener
 {
-    private final UdderCore plugin;
-    public PlayerListener(UdderCore plugin)
+    private final Core plugin;
+    public PlayerListener(Core plugin)
     {
         this.plugin = plugin;
     }

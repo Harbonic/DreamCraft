@@ -1,6 +1,5 @@
-package com.chris.rpg.Commands.RankCommand;
+package com.chris.rpg.Commands.Ranks;
 
-import com.chris.rpg.UdderCore;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.scoreboard.NameTagVisibility;

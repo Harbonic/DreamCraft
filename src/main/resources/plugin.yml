@@ -1,6 +1,6 @@
 name: MonsterNetwork
 version: 0.0.1
-main: com.chris.rpg.UdderCore
+main: com.chris.rpg.Core
 description: Main plugin.
 
 commands:
